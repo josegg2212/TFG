@@ -1,0 +1,36 @@
+## GSC
+Cota a 23
+Cota a 2 milímetros
+Cota ab mínimo 23 máximo 34
+Cota ab mínimo 23 mm máximo 34 mm
+Cota a1 23.54
+Cota c conforme
+Cota h1 no conforme
+Abrir orden
+Cerrar sesión
+Abrir plano
+Cerrar plano
+Repetir cota
+Reiniciar rango
+Pieza 3
+Herramienta SC0342
+
+
+## Keenon
+Go to table 2
+Wait 
+Wait 12 seconds
+Wait 12
+Deliver to table 2 tray 1
+Deliver to dishwashing area tray 2
+Execute 
+Respond 
+Continue 
+Stop 
+Stand by 
+Cancel 
+Current battery 
+Current status 
+What is your last task 
+Your next task 
+What is your current location

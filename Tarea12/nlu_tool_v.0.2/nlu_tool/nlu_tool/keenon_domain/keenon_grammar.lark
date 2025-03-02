@@ -1,0 +1,33 @@
+// Start point
+start: command | query
+
+
+command: ACTIONS action_complement?
+query: (QUESTION_PARTICLES BE_VERB)? QUERY_COMPLEMENTS* QUERIES
+
+
+action_complement: (location? object) | location | duration 
+object: OBJECTS NUMBER_IDS
+location: "to"? (point | table)
+duration: /\d+/ ("second" | "seconds")?
+
+
+point: POINTS
+table: TABLES NUMBER_IDS
+
+
+ACTIONS: "deliver" | "wait" | "go" | "stop" | "continue" | "stand by" | "cancel" | "respond" | "execute"
+OBJECTS: "tray"
+POINTS: "expedition area" | "dishwashing area" | "charging dock" | "here" | "original point"
+TABLES: "table"
+QUERIES: "battery" | "status" | "last task" | "next task" | "location"
+QUERY_COMPLEMENTS: "current" | "your"
+QUESTION_PARTICLES: "what" | "where"
+BE_VERB: "is" | "was"
+NUMBER_IDS: /[1|2|3]\b/
+
+
+// Lark imports
+%import common.DIGIT
+%import common.WS
+%ignore WS
