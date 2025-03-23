@@ -20,7 +20,7 @@ max_value <- VALUE WS unit?
 
 COMMAND_KEYWORD <- "cota" / "pieza" / "herramienta" / "abrir" / "cerrar" / "repetir" / "reiniciar" / "siguiente" / "quitar"
 TOOL_ID <- "sc" [0-9][0-9][0-9][0-9]
-MEASUREMENT_ID <- [A-Za-z] ([A-Za-z] / [0-9])?
+MEASUREMENT_ID <- [a-z] ([a-z] / [0-9])?
 PIECE_ID <- [0-9]+
 OBJECTS <- "orden" / "sesión" / "plano" / "herramienta" / "cota" / "rango"
 

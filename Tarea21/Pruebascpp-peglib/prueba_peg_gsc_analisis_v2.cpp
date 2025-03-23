@@ -5,6 +5,8 @@
 #include <vector>
 #include <map>
 
+#include <algorithm>
+
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -54,6 +56,28 @@ vector<IntentMapping> load_intent_map(const string &filepath) {
 }
 
 
+// Load json configuration (keywords and entities to capture)
+vector<RuleConfig> load_config(const string &filepath) {
+    vector<RuleConfig> config;
+    
+    ifstream file(filepath);
+    if (!file) {
+        cerr << "Error al abrir JSON de config: " << filepath << endl;
+        return {};
+    }
+    json j;
+    file >> j;
+
+    for (auto &item : j["rules"]) {
+        RuleConfig rc;
+        rc.rule_name = item["rule_name"].get<string>();
+        rc.type      = item["type"].get<string>();
+        config.push_back(rc);
+    }
+    return config;
+}
+
+
 
 // Main 
 int main()
@@ -76,13 +100,18 @@ int main()
         return 1;
     }
 
+
+    // Load json configuration (keywords and entities to capture)
+    string rule_config_path = "config.json";
+    vector<RuleConfig> rule_config = load_config(rule_config_path);
+
     // Grammar parser
     parser p(grammar);
+    
 
     // Extractor class
-    CGSCExtractor extractor;
-    extractor.on_extractor(p);
-
+    CGSCExtractor extractor(p, rule_config);
+   
     string input;
 
     // Run a loop to continuously read inputs and parse them
@@ -91,6 +120,15 @@ int main()
         // Read input from user and parse it
         cout << "Insert an input: ";
         getline(cin, input);
+
+        // Convert input to lowercase
+        input = toLower(input);
+        cout << input << endl;
+        cout << "Input (bytes): ";
+        for (char c : input) {
+            cout << hex << int((unsigned char)c) << " ";
+        }
+        cout << dec << endl;
 
         if (p.parse(input))
         {

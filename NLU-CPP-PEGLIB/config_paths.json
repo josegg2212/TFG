@@ -1,0 +1,12 @@
+{
+    "gsc": {
+        "grammar": "grammar_gsc.peg",
+        "config": "config.json",
+        "intent_map": "intent_map.json"
+    },
+    "keenon": {
+        "grammar": "grammar_keenon.peg",
+        "config": "config_keenon.json",
+        "intent_map": "intent_map_keenon.json"
+    }
+}

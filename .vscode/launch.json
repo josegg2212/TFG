@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/Jose/TFG/Tarea21/Pruebascpp-peglib",
-      "program": "d:/Jose/TFG/Tarea21/Pruebascpp-peglib/build/Debug/outDebug",
+      "cwd": "d:/Jose/TFG/NLU-CPP-PEGLIB",
+      "program": "d:/Jose/TFG/NLU-CPP-PEGLIB/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

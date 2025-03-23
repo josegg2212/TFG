@@ -3,65 +3,56 @@
 using namespace std;
 using namespace peg;
 
-// Class constructor
-CGSCExtractor::CGSCExtractor() {
-    keywords.resize(2, "");
-    entities["value"] = "";
-    entities["satisfied"] = "";
-    entities["unit_size"] = "";
-    entities["measure_name"] = "";
-    entities["piece_number"] = "";
-    entities["tool_code"] = "";
-    entities["range_min"] = "";
-    entities["range_max"] = "";
+
+string toLower(string str) {
+    transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
 }
 
-// Method for functions callbacks
-void CGSCExtractor::on_extractor(parser &p) {
-    p["COMMAND_KEYWORD"] = [this](const SemanticValues &sv) 
-    { 
-        this->on_COMMAND_KEYWORD(sv); 
-    };
-    p["OBJECTS"] = [this](const SemanticValues &sv) 
-    { 
-        this->on_OBJECTS(sv); 
-    };
-    p["TOOL_ID"] = [this](const SemanticValues &sv) 
-    {
-        this->on_TOOL_ID(sv); 
-    };
-    p["PIECE_ID"] = [this](const SemanticValues &sv) 
-    { 
-        this->on_PIECE_ID(sv); 
-    };
-    p["MEASUREMENT_ID"] = [this](const SemanticValues &sv) 
-    {
-        this->on_MEASUREMENT_ID(sv); 
-    };
-    p["single_value"] = [this](const SemanticValues &sv) 
-    { 
-        this->on_single_value(sv); 
-    };
-    p["min_value"] = [this](const SemanticValues &sv) 
-    { 
-        this->on_min_value(sv); 
-    };
-    p["max_value"] = [this](const SemanticValues &sv) 
-    { 
-        this->on_max_value(sv);
-    };
-    p["VALUE"] = [this](const SemanticValues &sv)
-    {
-        return sv.token_to_string();
-    };
-    p["UNIT"] = [this](const SemanticValues &sv) 
-    { 
-        this->on_UNIT(sv); 
-    };
-    p["SATISFIED_KEYWORDS"] = [this](const SemanticValues &sv) 
-    { 
-        this->on_SATISFIED_KEYWORDS(sv); 
-    };
+// Class constructor with initializations of keywords and entities, and functions callbacks
+CGSCExtractor::CGSCExtractor(parser &p, const vector<RuleConfig> &rule_config) {
+    // Initialize keywords and entities
+    keywords.resize(2, "");
+    entities["single_value"] = "";
+    entities["satisfied_words"] = "";
+    entities["unit"] = "";
+    entities["measurement_id"] = "";
+    entities["piece_id"] = "";
+    entities["tool_id"] = "";
+    entities["min_value"] = "";
+    entities["max_value"] = "";
+    
+    // Function callbacks
+    int keyword_index = 0;
+
+    for (const auto &rc : rule_config) {
+        if (rc.type == "keyword") {
+            p[rc.rule_name.c_str()] = [this, keyword_index](const SemanticValues &sv) {
+                this->register_keyword(sv,keyword_index);
+            };
+            keyword_index++;
+          
+
+        } else if (rc.type == "token_to_string") {
+            p[rc.rule_name.c_str()] = [](const SemanticValues &sv) {
+                return sv.token_to_string();
+            };
+
+        } else if (rc.type == "entity") {
+            p[rc.rule_name.c_str()] = [this, ruleName=toLower(rc.rule_name)](const SemanticValues &sv) {
+                this->register_entity(sv, ruleName);
+            };
+
+        } else if (rc.type == "node_entity") {
+            p[rc.rule_name.c_str()] = [this, ruleName=rc.rule_name](const SemanticValues &sv) {
+                this->register_node_entity(sv, ruleName);
+            };
+
+        } else {
+            std::cerr << "Tipo desconocido en rule_name: " 
+                      << rc.rule_name << " -> " << rc.type << std::endl;
+        }
+    }
 }
 
 // Method to get output
@@ -98,62 +89,31 @@ map<string, string> CGSCExtractor::get_output(vector<IntentMapping> intent_map) 
 void CGSCExtractor::reset_values() 
 {
     fill(keywords.begin(), keywords.end(), "");
-    entities["value"] = "";
-    entities["satisfied"] = "";
-    entities["unit_size"] = "";
-    entities["measure_name"] = "";
-    entities["piece_number"] = "";
-    entities["tool_code"] = "";
-    entities["range_min"] = "";
-    entities["range_max"] = "";
+    entities["single_value"] = "";
+    entities["satisfied_words"] = "";
+    entities["unit"] = "";
+    entities["measurement_id"] = "";
+    entities["piece_id"] = "";
+    entities["tool_id"] = "";
+    entities["min_value"] = "";
+    entities["max_value"] = "";
 }
 
 // Transformation methods for each parsing rule
-void CGSCExtractor::on_COMMAND_KEYWORD(const SemanticValues &sv)
+void CGSCExtractor::register_keyword(const SemanticValues &sv, int keyword_index)
 {
-    keywords[0] = sv.token(); 
+    cout << sv.token() << endl;
+    keywords[keyword_index] = sv.token(); 
 }
 
-void CGSCExtractor::on_OBJECTS(const SemanticValues &sv)
+void CGSCExtractor::register_entity(const SemanticValues &sv, const string &rule_name)
 {
-    keywords[1] = sv.token(); 
+    cout << sv.token() << endl;
+    entities[rule_name] = sv.token();
 }
-void CGSCExtractor::on_TOOL_ID(const SemanticValues &sv)
+void CGSCExtractor::register_node_entity(const SemanticValues &sv, const string &rule_name)
 {
-    entities["tool_code"] = sv.token(); 
-}
-
-void CGSCExtractor::on_PIECE_ID(const SemanticValues &sv)
-{
-    entities["piece_number"] = sv.token(); 
+    cout << sv.token() << endl;
+    entities[rule_name] = any_cast<string>(sv[0]);
 }
 
-void CGSCExtractor::on_MEASUREMENT_ID(const SemanticValues &sv)
-{
-    entities["measure_name"] = sv.token(); 
-}
-
-void CGSCExtractor::on_single_value(const SemanticValues &sv)
-{
-    entities["value"] = any_cast<string>(sv[0]); 
-}
-
-void CGSCExtractor::on_min_value(const SemanticValues &sv)
-{
-    entities["range_min"] = any_cast<string>(sv[0]);
-}
-
-void CGSCExtractor::on_max_value(const SemanticValues &sv)
-{
-    entities["range_max"] = any_cast<string>(sv[0]);
-}
-
-void CGSCExtractor::on_UNIT(const SemanticValues &sv)
-{
-    entities["unit_size"] = sv.token(); 
-}
-
-void CGSCExtractor::on_SATISFIED_KEYWORDS(const SemanticValues &sv)
-{
-        entities["satisfied"] = sv.token(); 
-}

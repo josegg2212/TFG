@@ -1,0 +1,16 @@
+{
+    "rules": [
+      {"rule_name": "COMMAND_KEYWORD","type": "keyword"},
+      {"rule_name": "OBJECTS","type": "keyword"},
+      {"rule_name": "TOOL_ID","type": "entity"},
+      {"rule_name": "PIECE_ID","type": "entity"},
+      {"rule_name": "MEASUREMENT_ID","type": "entity"},
+      {"rule_name": "single_value","type": "node_entity"},
+      {"rule_name": "min_value","type": "node_entity"},
+      {"rule_name": "max_value","type": "node_entity"},
+      {"rule_name": "VALUE","type": "token_to_string"},
+      {"rule_name": "UNIT","type": "entity"},
+      {"rule_name": "SATISFIED_KEYWORDS","type": "entity"} 
+    ]
+  }
+  
