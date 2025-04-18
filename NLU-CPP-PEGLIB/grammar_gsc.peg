@@ -11,7 +11,7 @@ object <- OBJECTS
 
 measurement_value <- single_value / range_value / satisfied
 single_value <- VALUE WS unit?
-range_value <- "mínimo" min_value "máximo" max_value
+range_value <- "minimo" min_value "maximo" max_value
 satisfied <- SATISFIED_KEYWORDS
 
 unit <- UNIT
@@ -22,10 +22,10 @@ COMMAND_KEYWORD <- "cota" / "pieza" / "herramienta" / "abrir" / "cerrar" / "repe
 TOOL_ID <- "sc" [0-9][0-9][0-9][0-9]
 MEASUREMENT_ID <- [a-z] ([a-z] / [0-9])?
 PIECE_ID <- [0-9]+
-OBJECTS <- "orden" / "sesión" / "plano" / "herramienta" / "cota" / "rango"
+OBJECTS <- "orden" / "sesion" / "plano" / "herramienta" / "cota" / "rango"
 
 VALUE <- [0-9]+ ([.,][0-9]+)?
-UNIT <- "milímetros" / "mm" / "pulgadas" / "in"
+UNIT <- "milimetros" / "mm" / "pulgadas" / "in"
 SATISFIED_KEYWORDS <- "conforme" / "no conforme"
 
 WS <- [ \t]*
